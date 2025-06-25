@@ -40,7 +40,7 @@ kops create cluster --name=harinadh.xyz \
 
 # One done run below commands to create the cluster 
 
-kops create -f cluster.yml
+kops create -f cluster.yaml
 kops update cluster --name harinadh.xyz --yes --admin
 kops validate cluster --wait 10m
-kops delete -f cluster.yml  --yes
+kops delete -f cluster.yaml  --yes
