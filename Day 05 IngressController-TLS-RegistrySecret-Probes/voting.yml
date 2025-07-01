@@ -1,221 +1,72 @@
-# redis
---- 
-apiVersion: v1
-kind: Service
-metadata: 
-  labels: 
-    app: redis
-  name: redis
-spec: 
-  clusterIP: None
-  ports:
-  - name: redis-service
-    port: 6379
-    targetPort: 6379
-  selector: 
-    app: redis
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: redis
-  labels:
-    app: redis
+  name: skillzverse-frontend
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: redis
+      app: skillzverse-frontend
   template:
     metadata:
       labels:
-        app: redis
+        app: skillzverse-frontend
     spec:
       containers:
-      - name: redis
-        image: redis:alpine
-        ports:
-        - containerPort: 6379
-          name: redis
-
-# db
---- 
-apiVersion: v1
-kind: Service
-metadata: 
-  labels: 
-    app: db
-  name: db
-spec: 
-  clusterIP: None
-  ports: 
-  - name: db
-    port: 5432
-    targetPort: 5432
-  selector: 
-    app: db
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: db
-  labels:
-    app: db
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: db
-  template:
-    metadata:
-      labels:
-        app: db
-    spec:
-      containers:
-      - name: db
-        image: postgres:9.4
-        env:
-        - name: PGDATA
-          value: /var/lib/postgresql/data/pgdata
-        - name: POSTGRES_USER
-          value: postgres
-        - name: POSTGRES_PASSWORD
-          value: postgres
-        ports:
-        - containerPort: 5432
-          name: db
-        volumeMounts:
-        - name: db-data
-          mountPath: /var/lib/postgresql/data
-      volumes:
-      - name: db-data
-        emptyDir: {}
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: postgres-pv-claim
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
-
-# result
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: result
-  labels:
-    app: result
-spec:
-  #type: LoadBalancer
-  ports:
-  - port: 80
-    targetPort: 80
-    name: result-service
-  selector:
-    app: result
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: result
-  labels:
-    app: result
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: result
-  template:
-    metadata:
-      labels:
-        app: result
-    spec:
-      containers:
-      - name: result
-        image: kiran2361993/votingapp:results
-        ports:
-        - containerPort: 80
-          name: result
+        - name: frontend
+          image: saihari1/skillzverse:client1
+          ports:
+            - containerPort: 3000
       imagePullSecrets:
-      - name: docker-pwd
-# vote
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: vote
-  labels:
-    apps: vote
-spec:
-  #type: LoadBalancer
-  ports:
-    - port: 80
-      targetPort: 80
-      name: vote-service
-  selector:
-    app: vote
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: vote
-  labels:
-    app: vote
-spec:
-  replicas: 2
-  selector:
-    matchLabels:
-      app: vote
-  template:
-    metadata:
-      labels:
-        app: vote
-    spec:
-      containers:
-      - name: vote
-        image: kiran2361993/votingapp:vote
-        ports:
-        - containerPort: 80
-          name: vote
-      imagePullSecrets:
-      - name: docker-pwd
+        - name: docker-pwd
 
-# worker
---- 
+---
 apiVersion: v1
 kind: Service
-metadata: 
-  labels: 
-    apps: worker
-  name: worker
-spec: 
-  clusterIP: None
-  selector: 
-    app: worker
---- 
+metadata:
+  name: skillzverse-frontend-service
+spec:
+  selector:
+    app: skillzverse-frontend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+  type: ClusterIP
+
+---
 apiVersion: apps/v1
 kind: Deployment
-metadata: 
-  labels: 
-    app: worker
-  name: worker
-spec: 
+metadata:
+  name: skillzverse-backend
+spec:
   replicas: 1
   selector:
     matchLabels:
-      app: worker
-  template: 
-    metadata: 
-      labels: 
-        app: worker
-    spec: 
-      containers: 
-      - image: kiran2361993/votingapp:worker
-        name: worker
+      app: skillzverse-backend
+  template:
+    metadata:
+      labels:
+        app: skillzverse-backend
+    spec:
+      containers:
+        - name: backend
+          image: saihari1/skillzverse:server1
+          ports:
+            - containerPort: 8090
       imagePullSecrets:
-      - name: docker-pwd
+        - name: docker-pwd
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: skillzverse-backend-service
+spec:
+  selector:
+    app: skillzverse-backend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8090
+  type: ClusterIP
