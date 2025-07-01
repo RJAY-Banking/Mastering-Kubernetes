@@ -1,0 +1,37 @@
+# install certbot in other ec2 and generate the crt and keys for it .
+sudo dnf install -y certbot python3-certbot-nginx
+
+
+# run this command for cert and key generation
+sudo certbot certonly \
+  --manual \
+  --preferred-challenges dns \
+  --key-type rsa \
+  --email saiharinadhpv@gmail.com \
+  --server https://acme-v02.api.letsencrypt.org/directory \
+  --agree-tos \
+  -d '*.harinadh.xyz'
+
+
+# after it will give cert and key , copy ackmy_cahllenge and enter as A record in Route 53 and then enter its value also after that record shows insync then click enter in ec2 where certbot is installed .
+
+
+
+
+
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.10.1/deploy/static/provider/cloud/deploy.yaml
+# for ingress controller in management server
+
+
+
+#for creating a secret in management server using k8s
+kubectl create secret docker-registry docker-pwd \
+  --docker-username=saihari1 \
+  --docker-password=docker token \
+  --docker-email=saiharinadhpv@gmail.com
+
+
+#For creating secret for TLS certificates and keys in management server
+#before that ypou have to save the tls crt and key in /tmp path in management server and use the below command there
+
+kubectl create secret tls nginx-tls-default --key="tls.key" --cert="tls.crt"
