@@ -16,3 +16,11 @@ openssl x509 -req -in user2.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out us
 
 
 # Now copy thse .crt and .key generated in management server for 2 users in the control plane 
+
+
+
+# for admin
+
+openssl genrsa -out sai.key 2048
+openssl req -new -key sai.key -out sai.csr -subj "/CN=sai/O=clusteradmin"
+openssl x509 -req -in sai.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out sai.crt -days 365
