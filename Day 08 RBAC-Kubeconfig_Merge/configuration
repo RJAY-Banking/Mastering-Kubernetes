@@ -1,0 +1,18 @@
+# your cluster is ready then login to management and control plane . In control plane in path /etc/kubernetes/kops-controller you will find the ca.crt and ca.key and copy these keys in management server in /tmp location and run these below commands 
+
+
+# for user user1
+openssl genrsa -out user1.key 2048
+openssl req -new -key user1.key -out user1.csr -subj "/CN=user1/O=development"
+openssl x509 -req -in user1.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out user1.crt -days 365
+
+
+
+# for user user2
+openssl genrsa -out user2.key 2048
+openssl req -new -key user2.key -out user2.csr -subj "/CN=user2/O=production"
+openssl x509 -req -in user2.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out user2.crt -days 365
+
+
+
+# Now copy thse .crt and .key generated in management server for 2 users in the control plane 
