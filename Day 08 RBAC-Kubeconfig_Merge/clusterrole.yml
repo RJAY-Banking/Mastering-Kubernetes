@@ -17,7 +17,7 @@ metadata:
   name: ClusterRole-saikiran
 subjects:
 - kind: User
-  name: saikiran
+  name: sai
   apiGroup: rbac.authorization.k8s.io
 roleRef:
   kind: ClusterRole
