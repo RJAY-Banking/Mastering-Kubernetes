@@ -24,3 +24,9 @@ openssl x509 -req -in user2.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out us
 openssl genrsa -out sai.key 2048
 openssl req -new -key sai.key -out sai.csr -subj "/CN=sai/O=clusteradmin"
 openssl x509 -req -in sai.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out sai.crt -days 365
+
+
+
+# for merging all config files
+
+export KUBECONFIG=USER1-CONFIG:USER2-CONFIG:SAI-CONFIG kubectl config view --merge --flatten > mixed-config.txt
