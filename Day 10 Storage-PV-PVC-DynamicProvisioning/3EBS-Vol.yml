@@ -26,10 +26,10 @@ spec:
       volumes:
       - name: mongodb-data
         awsElasticBlockStore:
-           volumeID: vol-016f2bbb6f3e82c1d
+           volumeID: vol-0ca20cf19386ca21f
            fsType: ext4
       nodeSelector:
-          kubernetes.io/hostname: i-0eabc073991b3166c
+          kubernetes.io/hostname: i-012491f1a77cea684
 
 
 # db.movie.insert({"name":"Fast & Furious 1"})
