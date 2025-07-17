@@ -1,0 +1,7 @@
+kops create cluster --name=harinadh.xyz \
+--state=s3://skillzverse-main --zones=us-east-1a \
+--node-count=2 --control-plane-count=1 --node-size=t3.medium --control-plane-size=t3.medium \
+--control-plane-zones=us-east-1a --control-plane-volume-size 10 --node-volume-size 10 \
+--topology private --networking calico
+--ssh-public-key ~/.ssh/id_rsa.pub \
+--dns-zone=harinadh.xyz --yes
